@@ -31,7 +31,7 @@ const handleFinishEvent = (val: LoginForm) => {
   <div class="w-full h-full flex justify-center items-center login-wrap">
     <div
       v-show="submitLoading"
-      class="position-absolute z-1 w-full h-full flex justify-center items-center bg-black bg-opacity-40"
+      class="position-absolute z-1 w-full h-full flex justify-center items-center bg-white bg-opacity-80"
     >
       <div class="i-eos-icons:three-dots-loading text-8xl text-#1890ff"></div>
     </div>

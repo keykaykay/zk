@@ -2,12 +2,13 @@
 const router = useRouter()
 </script>
 <template>
+  <div class="i-ic:round-space-dashboard" v-show="false"></div>
   <div>dashboard</div>
-  <div class="i-ic:round-space-dashboard text-2xl"></div>
-  <a-button @click="router.push('/')">logout</a-button>
+  <div>dashboard</div>
 </template>
 <route lang="yaml">
 meta:
+  showMenu: true
   title: dashboard
   order: 1
   icon: ic:round-space-dashboard
