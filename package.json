@@ -1,0 +1,26 @@
+{
+  "name": "zkme",
+  "version": "1.0.5",
+  "description": "Templates for rapid development",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "zk": "index.js"
+  },
+  "scripts": {
+    "start": "zx index.js"
+  },
+  "keywords": [
+    "zk",
+    "zkme",
+    "vue",
+    "node",
+    "vue3"
+  ],
+  "author": "zk",
+  "license": "MIT",
+  "dependencies": {
+    "prompts": "^2.4.2",
+    "zx": "^7.0.7"
+  }
+}
