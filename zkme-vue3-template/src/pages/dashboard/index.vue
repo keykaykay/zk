@@ -1,6 +1,4 @@
-<script lang="ts" setup>
-const router = useRouter()
-</script>
+<script lang="ts" setup></script>
 <template>
   <div class="i-ic:round-space-dashboard" v-show="false"></div>
   <div>dashboard</div>

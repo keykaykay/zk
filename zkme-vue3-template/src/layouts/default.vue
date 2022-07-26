@@ -1,18 +1,15 @@
 <script lang="ts" setup>
 import TopMenu from './components/TopMenu.vue'
+import LeftMenu from './components/LeftMenu.vue'
 import avatar from '@/assets/avatar1.gif'
 import { useAppStore } from '@/store/app'
+import { useMobile } from '@/hooks/useDevice'
+import { localCacheStorage } from '@/utils/storage'
 
+const { isFullscreen, toggle } = useFullscreen()
+const { isMobile } = useMobile()
 const appStore = useAppStore()
 const router = useRouter()
-
-const visibleExitModal = ref(false)
-
-const visibleProjectSettingDrawer = ref(false)
-
-const handleMenuClick = ({ key }: { key: string; keyPath: string[] }) => {
-  router.push(key)
-}
 
 const handleOpenExternalLinkEvent = () => {
   window.open('https://github.com/zkmefun', '__blank')
@@ -20,46 +17,47 @@ const handleOpenExternalLinkEvent = () => {
 
 const handleModelChangeEvent = (model: 'left' | 'top') => {
   appStore.model = model
-  visibleProjectSettingDrawer.value = false
+  appStore.visibleProjectSettingDrawer = false
 }
-const { isFullscreen, toggle } = useFullscreen()
+
+const handleCollapseEvent = () => {
+  if (isMobile.value) {
+    appStore.visibleMenuDrawer = true
+    appStore.collapsed = appStore.visibleMenuDrawer
+  } else {
+    appStore.collapsed = !appStore.collapsed
+  }
+}
+
+const handleLogoutEvent = () => {
+  appStore.visibleExitModal = false
+  localCacheStorage.remove('token')
+  router.push('/login')
+}
+
+watch([isMobile], () => {
+  appStore.visibleMenuDrawer = false
+  if (isMobile.value) {
+    appStore.collapsed = true
+  }
+})
 </script>
 <template>
   <a-layout class="h-full w-full">
     <a-layout-sider
-      v-if="appStore.model === 'left'"
+      v-if="appStore.model === 'left' && !isMobile"
       v-model:collapsed="appStore.collapsed"
       :trigger="null"
       collapsible
     >
-      <div
-        class="h-48px flex items-center justify-center text-white cursor-pointer"
-      >
-        <div class="i-logos:looker-icon text-3xl"></div>
-        <div class="ml-4 text-2xl font-bold mt-1" v-show="!appStore.collapsed">
-          ICDI
-        </div>
-      </div>
-      <a-menu
-        :selectedKeys="appStore.selectedKeys"
-        theme="dark"
-        mode="inline"
-        @click="handleMenuClick"
-      >
-        <a-menu-item v-for="menu in appStore.menus" :key="menu.path">
-          <template #icon>
-            <div :class="`i-${menu.meta.icon}`"></div>
-          </template>
-          <span>{{ menu.meta.title }}</span>
-        </a-menu-item>
-      </a-menu>
+      <LeftMenu />
     </a-layout-sider>
     <a-layout class="flex-1!">
       <div class="flex flex-col bg-white! p-0!">
         <a-layout-header
-          class="h-48px! p-0! bg-white! text-#000! flex items-center justify-between shadow overflow-hidden"
+          class="h-48px! p-0! bg-white! text-#000! flex items-center justify-between shadow overflow-hidden max-w-full"
         >
-          <div v-if="appStore.model === 'left'">
+          <div v-if="appStore.model === 'left' || isMobile">
             <div
               class="ml-3 text-xl cursor-pointer"
               :class="[
@@ -67,17 +65,17 @@ const { isFullscreen, toggle } = useFullscreen()
                   ? 'i-line-md:menu-fold-right'
                   : 'i-line-md:menu-fold-left'
               ]"
-              @click="appStore.collapsed = !appStore.collapsed"
+              @click="handleCollapseEvent"
             ></div>
           </div>
           <div
-            v-if="appStore.model === 'top'"
+            v-if="appStore.model === 'top' && !isMobile"
             class="h-48px ml-3 flex items-center justify-center cursor-pointer"
           >
             <div class="i-logos:looker-icon text-3xl"></div>
             <div class="ml-4 text-2xl font-bold mt-1">ICDI</div>
           </div>
-          <TopMenu v-if="appStore.model === 'top'" />
+          <TopMenu v-if="appStore.model === 'top' && !isMobile" />
           <div class="flex items-center h-full">
             <div
               class="text-2xl mx-3 h-full cursor-pointer"
@@ -92,7 +90,7 @@ const { isFullscreen, toggle } = useFullscreen()
               <template #content>
                 <div
                   class="flex items-center cursor-pointer"
-                  @click="visibleExitModal = true"
+                  @click="appStore.visibleExitModal = true"
                 >
                   <div class="i-gg:log-off text-xl mx-2"></div>
                   <div>退出系统</div>
@@ -116,7 +114,7 @@ const { isFullscreen, toggle } = useFullscreen()
             </a-popover>
             <div
               class="i-ant-design:setting-outlined text-2xl mx-3 h-full cursor-pointer"
-              @click="visibleProjectSettingDrawer = true"
+              @click="appStore.visibleProjectSettingDrawer = true"
             />
           </div>
         </a-layout-header>
@@ -128,12 +126,12 @@ const { isFullscreen, toggle } = useFullscreen()
     </a-layout>
   </a-layout>
   <a-modal
-    v-model:visible="visibleExitModal"
+    v-model:visible="appStore.visibleExitModal"
     centered
     :closable="false"
     :width="420"
-    @ok="router.push('/')"
-    @cancel="visibleExitModal = false"
+    @ok="handleLogoutEvent"
+    @cancel="appStore.visibleExitModal = false"
   >
     <div class="flex items-center">
       <div class="i-ic:round-tips-and-updates text-2xl text-#e8be5d"></div>
@@ -142,7 +140,7 @@ const { isFullscreen, toggle } = useFullscreen()
     <div class="mt-2">是否确认退出系统？</div>
   </a-modal>
   <a-drawer
-    :width="330"
+    :width="300"
     title="项目配置"
     :bodyStyle="{
       padding: '16px',
@@ -152,8 +150,8 @@ const { isFullscreen, toggle } = useFullscreen()
       padding: '16px',
       background: '#f3f4f6'
     }"
-    :visible="visibleProjectSettingDrawer"
-    @close="visibleProjectSettingDrawer = false"
+    :visible="appStore.visibleProjectSettingDrawer"
+    @close="appStore.visibleProjectSettingDrawer = false"
   >
     <a-divider>导航栏模式</a-divider>
     <div class="flex items-center justify-around h-50px">
@@ -174,6 +172,19 @@ const { isFullscreen, toggle } = useFullscreen()
         ></div>
       </a-tooltip>
     </div>
+  </a-drawer>
+  <a-drawer
+    :width="200"
+    placement="left"
+    :closable="false"
+    :bodyStyle="{
+      padding: '0',
+      background: '#001529'
+    }"
+    :visible="appStore.visibleMenuDrawer"
+    @close="appStore.visibleMenuDrawer = false"
+  >
+    <LeftMenu />
   </a-drawer>
 </template>
 <style lang="less" scoped>

@@ -4,25 +4,17 @@ import { useAppStore } from '@/store/app'
 const appStore = useAppStore()
 const router = useRouter()
 
-const menuWidth = computed(() => {
-  const leftWidth = appStore.model === 'left' ? 32 : 105
-  return `calc(100vw - ${182 + leftWidth}px)`
-})
 const handleMenuClick = ({ key }: { key: string; keyPath: string[] }) => {
   router.push(key)
 }
 </script>
 <template>
-  <div class="h-full header-topmenu">
+  <div class="h-full header-topmenu min-w-0 flex-1">
     <a-menu
       :selectedKeys="appStore.selectedKeys"
       theme="light"
       mode="horizontal"
       @click="handleMenuClick"
-      class="top-menu"
-      :style="{
-        width: menuWidth
-      }"
     >
       <template #overflowedIndicator>
         <div class="i-ant-design:ellipsis-outlined text-2xl" />
@@ -38,7 +30,7 @@ const handleMenuClick = ({ key }: { key: string; keyPath: string[] }) => {
 </template>
 <style lang="less">
 .header-topmenu {
-  .top-menu {
+  .ant-menu {
     height: 100%;
     display: flex;
     justify-content: center;

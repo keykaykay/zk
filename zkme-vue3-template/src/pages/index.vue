@@ -1,4 +1,4 @@
 <route lang="yaml">
 path: /
-redirect: /login
+redirect: /dashboard
 </route>

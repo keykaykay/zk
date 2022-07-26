@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { message } from 'ant-design-vue'
+import { localCacheStorage } from '@/utils/storage'
 
 interface LoginForm {
   username: string
@@ -20,11 +21,10 @@ const loginRules = reactive({
 const handleFinishEvent = (val: LoginForm) => {
   console.log('Success:', val)
   submitLoading.value = true
-  setTimeout(() => {
-    submitLoading.value = false
-    router.push('/dashboard')
-    message.success('登录成功')
-  }, 1500)
+  submitLoading.value = false
+  localCacheStorage.set('token', '123456')
+  router.replace('/')
+  message.success('登录成功')
 }
 </script>
 <template>
