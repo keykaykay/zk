@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { message } from 'ant-design-vue'
 import { localCacheStorage } from '@/utils/storage'
+import { VITE_TITLE } from '@/utils/constant'
 
 interface LoginForm {
   username: string
@@ -46,7 +47,7 @@ const handleFinishEvent = (val: LoginForm) => {
       >
         <a-form-item>
           <div class="w-full flex justify-center items-center">
-            <h1>呼叫中心</h1>
+            <h1>{{ VITE_TITLE }}</h1>
           </div>
         </a-form-item>
         <a-form-item name="username">
@@ -96,5 +97,6 @@ const handleFinishEvent = (val: LoginForm) => {
 </style>
 <route lang="yaml">
 meta:
+  title: 登录
   layout: fullScreen
 </route>

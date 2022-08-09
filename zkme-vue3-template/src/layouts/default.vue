@@ -5,6 +5,7 @@ import avatar from '@/assets/avatar1.gif'
 import { useAppStore } from '@/store/app'
 import { useMobile } from '@/hooks/useDevice'
 import { localCacheStorage } from '@/utils/storage'
+import { VITE_TITLE } from '@/utils/constant'
 
 const { isFullscreen, toggle } = useFullscreen()
 const { isMobile } = useMobile()
@@ -43,7 +44,7 @@ watch([isMobile], () => {
 })
 </script>
 <template>
-  <a-layout class="h-full w-full">
+  <a-layout class="h-full w-full overflow-hidden">
     <a-layout-sider
       v-if="appStore.model === 'left' && !isMobile"
       v-model:collapsed="appStore.collapsed"
@@ -72,8 +73,8 @@ watch([isMobile], () => {
             v-if="appStore.model === 'top' && !isMobile"
             class="h-48px ml-3 flex items-center justify-center cursor-pointer"
           >
-            <div class="i-logos:looker-icon text-3xl"></div>
-            <div class="ml-4 text-2xl font-bold mt-1">ICDI</div>
+            <div class="i-logos:delicious text-3xl"></div>
+            <div class="ml-4 text-2xl font-bold mt-1">{{ VITE_TITLE }}</div>
           </div>
           <TopMenu v-if="appStore.model === 'top' && !isMobile" />
           <div class="flex items-center h-full">
@@ -109,7 +110,7 @@ watch([isMobile], () => {
               </template>
               <div class="flex items-center">
                 <a-avatar :src="avatar" />
-                <span class="mx-2 text-xl">ICDI</span>
+                <span class="mx-2 text-xl">admin</span>
               </div>
             </a-popover>
             <div

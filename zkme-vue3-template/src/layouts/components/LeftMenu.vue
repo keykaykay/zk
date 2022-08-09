@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useAppStore } from '@/store/app'
 import { useMobile } from '@/hooks/useDevice'
+import { VITE_TITLE } from '@/utils/constant'
 
 const { isMobile } = useMobile()
 const appStore = useAppStore()
@@ -16,12 +17,12 @@ const handleMenuClick = ({ key }: { key: string; keyPath: string[] }) => {
     <div
       class="h-48px flex items-center justify-center text-white cursor-pointer"
     >
-      <div class="i-logos:looker-icon text-3xl"></div>
+      <div class="i-logos:delicious text-3xl"></div>
       <div
         class="ml-4 text-2xl font-bold mt-1"
         v-show="!appStore.collapsed || isMobile"
       >
-        ICDI
+        {{ VITE_TITLE }}
       </div>
     </div>
     <a-menu

@@ -28,11 +28,11 @@ class WebStorage {
     this.timeout = timeout
   }
 
-  private getKey(key: string) {
+  private getKey(key: storageKey) {
     return `${this.prefixKey}${key}`.toUpperCase()
   }
 
-  set(key: string, value: any, expire = this.timeout) {
+  set(key: storageKey, value: any, expire = this.timeout) {
     const stringData = JSON.stringify({
       value,
       time: Date.now(),
@@ -44,7 +44,7 @@ class WebStorage {
     this.storage.setItem(this.getKey(key), stringifyValue)
   }
 
-  get(key: string, def: any = null): any {
+  get(key: storageKey, def: any = null): any {
     const val = this.storage.getItem(this.getKey(key))
     if (!val) return def
 
@@ -65,7 +65,7 @@ class WebStorage {
    * @param {string} key
    * @memberof Cache
    */
-  remove(key: string) {
+  remove(key: storageKey) {
     this.storage.removeItem(this.getKey(key))
   }
 

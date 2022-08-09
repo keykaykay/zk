@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import VitePluginHtmlEnv from 'vite-plugin-html-env'
 import Pages from 'vite-plugin-pages'
 import Layouts from 'vite-plugin-vue-layouts'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -14,6 +15,7 @@ export default defineConfig({
     vue({
       reactivityTransform: true
     }),
+    VitePluginHtmlEnv(),
     Pages(),
     Layouts(),
     AutoImport({
@@ -30,6 +32,11 @@ export default defineConfig({
         presetIcons({
           warn: true
         })
+      ],
+      safelist: [
+        'i-simple-icons:aboutdotme',
+        'i-ic:round-space-dashboard',
+        'i-icon-park-solid:guide-board',
       ]
     })
   ],
@@ -41,6 +48,15 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    open: true
+    port: 4012,
+    open: true,
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:3000',
+        changeOrigin: true,
+        ws: true,
+        rewrite: path => path.replace(/^\/api/, ''),
+      },
+    },
   }
 })
